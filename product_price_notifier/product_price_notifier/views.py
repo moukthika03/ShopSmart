@@ -11,6 +11,7 @@ def web_scrape(url, product_name):
     soup = BeautifulSoup(webpage.content, "html.parser")
     # print(soup.prettify())
     text = soup.get_text().strip()
+    print(text)
     prices = soup.find_all("div", class_= '_30jeq3')
     refined_prices=[]
     for price in prices:
