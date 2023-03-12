@@ -20,17 +20,14 @@
                     <th>S.NO.</th>
                     <th>NAME</th>
                     <th>PRICE</th>
-                    <th>URL</th>
-
                 </tr>
                 </thead>
                 <tbody>
                 {% for p in products %}
                 <tr>
                     <td>{{forloop.counter}}</td>
-                    <td>{{p.1}}</td>
+                    <td><a href = {{p.3}}>{{p.1}}</a></td>
                     <td>{{p.2}}</td>
-                    <td>{{p.3}}</td>
                 </tr>
                 {%endfor%}
                 </tbody>

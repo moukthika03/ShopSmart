@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup 
 import csv
 import hashlib
+import pyshorteners
 
 def preprocess(text):
     lt = text_lowercase(text)
@@ -10,7 +11,7 @@ def preprocess(text):
     rs = remove_stopwords(lt)
     return lt
 
-def web_scrape(writer, url, product_name, product_div, price_div, title_div):
+def web_scrape(writer, url, product_name, product_div, price_div, title_div, product_link_div):
     webpage = requests.get(url+product_name)
     soup = BeautifulSoup(webpage.content, "html.parser")
 
@@ -18,6 +19,12 @@ def web_scrape(writer, url, product_name, product_div, price_div, title_div):
 
     prices= [td.find(class_= price_div) for td in soup.findAll("div", class_= product_div)]
     titles = [td.find(class_= title_div) for td in soup.findAll("div", class_= product_div)]
+
+    if "flipkart" in url:
+        product_links = [td.find("a", class_= product_link_div, href=True) for td in soup.findAll("div", class_= product_div)]
+    if "snapdeal" in url:
+        product_links = [td.find("a") for td in soup.findAll("div", class_= product_div)]
+    
 
     # Extracting prices
     refined_prices=[]
@@ -36,7 +43,12 @@ def web_scrape(writer, url, product_name, product_div, price_div, title_div):
         title = preprocess(title['title'])
         refined_titles.append(title)
 
+    # Extracting product links
+    product_urls = []
+    for link in product_links:
+        product_urls.append("https://www.flipkart.com" + link['href'])
+
     for i in range(0, len(refined_prices)):
-        writer.writerow([hashlib.sha256(refined_titles[i].encode('utf-8')), refined_titles[i], refined_prices[i], url])
+        writer.writerow([hashlib.sha256(refined_titles[i].encode('utf-8')), refined_titles[i], refined_prices[i], product_urls[i]])
         product_price[refined_titles[i]] = refined_prices[i]
     return product_price
