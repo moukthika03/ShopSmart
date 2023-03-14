@@ -22,7 +22,7 @@ def web_scrape(writer, url, product_name, product_div, price_div, title_div, pro
 
     if "flipkart" in url:
         product_links = [td.find("a", class_= product_link_div, href=True) for td in soup.findAll("div", class_= product_div)]
-    if "snapdeal" in url:
+    elif "snapdeal" in url:
         product_links = [td.find("a") for td in soup.findAll("div", class_= product_div)]
     
 
@@ -46,7 +46,10 @@ def web_scrape(writer, url, product_name, product_div, price_div, title_div, pro
     # Extracting product links
     product_urls = []
     for link in product_links:
-        product_urls.append("https://www.flipkart.com" + link['href'])
+        if "flipkart" in url:
+            product_urls.append("https://www.flipkart.com" + link['href'])
+        else:
+            product_urls.append(link['href'])
 
     for i in range(0, len(refined_prices)):
         writer.writerow([hashlib.sha256(refined_titles[i].encode('utf-8')), refined_titles[i], refined_prices[i], product_urls[i]])
