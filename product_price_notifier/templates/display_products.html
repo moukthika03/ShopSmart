@@ -9,6 +9,8 @@
   </head>
   <body>
     <br><br>
+    <form action="display_products" method="POST">
+        {% csrf_token %}
     <h1 class="text-center my-3">Suggested products</h1>
     <div class="row">
         <div class="col-md-12">
@@ -20,22 +22,34 @@
                     <th>S.NO.</th>
                     <th>NAME</th>
                     <th>PRICE</th>
+                    <th>RELEVANCE FEEDBACK</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for p in products %}
+                
                 <tr>
                     <td>{{forloop.counter}}</td>
                     <td><a href = {{p.3}}>{{p.1}}</a></td>
                     <td>{{p.2}}</td>
+                    <td> 
+                        <label><input type="checkbox" name = "relevant_products" id='regular' value = "{{ forloop.counter }}"></label>
+                    </td>
                 </tr>
+            
                 {%endfor%}
                 </tbody>
             </table>
+            <div class="container text-center">
+                <button class="btn" style="background-color: #39B5E0;">Submit
+                  <!-- <a href="display_products">Submit</a> -->
+                </button>
+            </div>
             </div>
         </div>
         </div>
     
         </div>
+    </form>
     </body>
 </html>
