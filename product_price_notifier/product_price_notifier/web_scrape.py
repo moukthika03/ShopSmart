@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import csv
 import hashlib
 import pyshorteners
+from .models import Products
 
 def preprocess(text):
     lt = text_lowercase(text)
@@ -42,6 +43,7 @@ def web_scrape(writer, url, product_name, product_div, price_div, title_div, pro
     for title in titles:
         title = preprocess(title['title'])
         refined_titles.append(title)
+    print(refined_titles)
 
     # Extracting product links
     product_urls = []
@@ -52,6 +54,8 @@ def web_scrape(writer, url, product_name, product_div, price_div, title_div, pro
             product_urls.append(link['href'])
 
     for i in range(0, len(refined_prices)):
+        rp = Products(product_name=refined_titles[i], price=refined_prices[i], link = product_urls[i], query = product_name, relevant = False)
+        rp.save()
         writer.writerow([hashlib.sha256(refined_titles[i].encode('utf-8')), refined_titles[i], refined_prices[i], product_urls[i]])
         product_price[refined_titles[i]] = refined_prices[i]
     return product_price
